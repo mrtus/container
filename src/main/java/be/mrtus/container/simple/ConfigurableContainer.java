@@ -1,0 +1,19 @@
+package be.mrtus.container.simple;
+
+import be.mrtus.container.Container;
+import java.util.function.Supplier;
+
+public interface ConfigurableContainer extends Container {
+
+	public void addServiceProvider(Class<? extends ServiceProvider> serviceProviderClass);
+
+	default public void addServiceProvider(ServiceProvider serviceProvider) {
+		serviceProvider.configure(this);
+	}
+
+	public <T> void share(Class<T> serviceClass, Supplier<T> supplier);
+
+	default public <T> void share(Class<T> serviceClass, Class<? extends T> serviceImplementationClass) {
+		this.share(serviceClass, () -> this.get(serviceImplementationClass));
+	}
+}

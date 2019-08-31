@@ -22,6 +22,8 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 	public SimpleContainer(
 			Container delegate
 	) {
+		this.serviceInstances.put(Container.class, this);
+
 		this.delegate = delegate;
 
 		if(this.delegate instanceof ContainerAware) {

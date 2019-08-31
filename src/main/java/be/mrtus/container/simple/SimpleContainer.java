@@ -1,7 +1,7 @@
 package be.mrtus.container.simple;
 
-import be.mrtus.container.ContainerAware;
 import be.mrtus.container.Container;
+import be.mrtus.container.ContainerAware;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +16,7 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 	private final Map<Class, Object> serviceInstances = new HashMap<>();
 
 	public SimpleContainer() {
+		this(new NullContainer());
 	}
 
 	public SimpleContainer(
@@ -46,13 +47,7 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 
 		Supplier<T> supplier = this.configuredServices.getOrDefault(
 				serviceClass,
-				() -> {
-					if(this.delegate == null) {
-						return null;
-					}
-
-					return this.delegate.get(serviceClass);
-				}
+				() -> this.delegate.get(serviceClass)
 		);
 
 		serviceInstance = supplier.get();

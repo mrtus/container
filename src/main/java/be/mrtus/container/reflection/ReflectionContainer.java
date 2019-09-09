@@ -24,7 +24,7 @@ public class ReflectionContainer implements Container, ContainerAware {
 		}
 	}
 
-	public Container getContainer() {
+	private Container getContainer() {
 		if(this.container == null) {
 			this.container = this;
 		}

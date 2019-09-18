@@ -54,7 +54,7 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 
 		serviceInstance = supplier.get();
 		if(serviceInstance == null) {
-			throw new ServiceNotFound();
+			throw new ServiceNotFound("Instance for class '" + serviceClass.toString() + "' could not be created");
 		}
 
 		this.serviceInstances.put(serviceClass, serviceInstance);

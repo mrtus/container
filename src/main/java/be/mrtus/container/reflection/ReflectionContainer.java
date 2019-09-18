@@ -20,7 +20,7 @@ public class ReflectionContainer implements Container, ContainerAware {
 		try {
 			return this.createInstance(serviceClass);
 		} catch(FittingConstructorNotFound exception) {
-			throw new ServiceNotFound();
+			throw new ServiceNotFound("Instance for class '" + serviceClass.toString() + "' could not be created");
 		}
 	}
 

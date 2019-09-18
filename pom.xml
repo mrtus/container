@@ -31,6 +31,12 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<connection>scm:git:https://github.com/mrtus/container.git</connection>
+		<developerConnection>scm:git:https://github.com/mrtus/container.git</developerConnection>
+		<url>https://github.com/mrtus/container.git</url>
+	</scm>
+
 	<packaging>jar</packaging>
 
 	<properties>

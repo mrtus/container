@@ -9,17 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class SimpleContainer implements Container, ConfigurableContainer {
+public class SimpleConfigurableContainer implements Container, ConfigurableContainer {
 
 	private final Map<Class, Supplier> configuredServices = new HashMap<>();
 	private Container delegate;
 	private final Map<Class, Object> serviceInstances = new HashMap<>();
 
-	public SimpleContainer() {
+	public SimpleConfigurableContainer() {
 		this(new NullContainer());
 	}
 
-	public SimpleContainer(
+	public SimpleConfigurableContainer(
 			Container delegate
 	) {
 		this.serviceInstances.put(Container.class, this);

@@ -1,4 +1,4 @@
-package be.mrtus.container.simple;
+package be.mrtus.container.configurable;
 
 public class CouldNotInstantiateServiceProvider extends RuntimeException {
 

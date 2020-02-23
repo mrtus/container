@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -40,6 +41,8 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	@Override
 	public void addServiceProvider(Class<? extends ServiceProvider> serviceProviderClass) {
+		Objects.requireNonNull(serviceProviderClass, "Service provider class cannot be null");
+
 		ServiceProvider serviceProvider = this.createServiceProviderInstance(serviceProviderClass);
 
 		this.addServiceProvider(serviceProvider);
@@ -47,6 +50,8 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	@Override
 	public <T> T get(Class<T> serviceClass) {
+		Objects.requireNonNull(serviceClass, "Service class cannot be null");
+
 		T serviceInstance = this.registry.get(serviceClass);
 		if(serviceInstance != null) {
 			return serviceInstance;
@@ -71,11 +76,17 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	@Override
 	public <T> void handle(Class<T> serviceClass, Consumer<T> consumer) {
+		Objects.requireNonNull(serviceClass, "Service class cannot be null");
+		Objects.requireNonNull(consumer, "Service consumer cannot be null");
+
 		this.configuredHandlers.put(serviceClass, consumer);
 	}
 
 	@Override
 	public <T> void share(Class<T> serviceClass, Supplier<T> supplier) {
+		Objects.requireNonNull(serviceClass, "Service class cannot be null");
+		Objects.requireNonNull(supplier, "Service supplier cannot be null");
+
 		this.configuredServices.put(serviceClass, supplier);
 	}
 

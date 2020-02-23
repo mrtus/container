@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +84,7 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 		List<Class> classesList = new ArrayList<>();
 
-		classesList.addAll(Arrays.asList(classOfInstance.getInterfaces()));
-
+		classesList.addAll(this.findInterfacesOfClass(classOfInstance));
 		classesList.addAll(this.findSuperClassesOfClass(classOfInstance));
 
 		classesList.forEach(instanceClass -> {
@@ -110,6 +110,26 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 				| InvocationTargetException exception) {
 			throw new CouldNotInstantiateServiceProvider(exception);
 		}
+	}
+
+	private Collection<? extends Class> findInterfacesOfClass(Class<?> classOfInstance) {
+		var directInterfacesList = Arrays.asList(classOfInstance.getInterfaces());
+
+		List<Class> list = new ArrayList<>();
+
+		list.addAll(directInterfacesList);
+
+		directInterfacesList.forEach(interfaceClass -> {
+			var interfaces = this.findInterfacesOfClass(interfaceClass);
+
+			if(interfaces.isEmpty()) {
+				return;
+			}
+
+			list.addAll(interfaces);
+		});
+
+		return list;
 	}
 
 	private List<Class> findSuperClassesOfClass(Class instanceClass) {

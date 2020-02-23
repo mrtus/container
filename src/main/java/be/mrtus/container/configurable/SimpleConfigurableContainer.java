@@ -1,7 +1,7 @@
 package be.mrtus.container.configurable;
 
 import be.mrtus.container.Container;
-import be.mrtus.container.ContainerAware;
+import be.mrtus.container.RegisterableServicesContainer;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,24 +13,23 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	private final Map<Class, Supplier> configuredServices = new HashMap<>();
 	private Container delegate;
-	private final Map<Class, Object> serviceInstances = new HashMap<>();
+	private RegisterableServicesContainer registerableServicesContainer;
 
-	public SimpleConfigurableContainer() {
-		this(new NullContainer());
+	public SimpleConfigurableContainer(
+			RegisterableServicesContainer canRegisterServices
+	) {
+		this(
+				canRegisterServices,
+				new NullContainer()
+		);
 	}
 
 	public SimpleConfigurableContainer(
+			RegisterableServicesContainer registerableServicesContainer,
 			Container delegate
 	) {
-		this.serviceInstances.put(Container.class, this);
-
+		this.registerableServicesContainer = registerableServicesContainer;
 		this.delegate = delegate;
-
-		if(this.delegate instanceof ContainerAware) {
-			ContainerAware containerAwareDelegate = (ContainerAware)this.delegate;
-
-			containerAwareDelegate.setContainer(this);
-		}
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	@Override
 	public <T> T get(Class<T> serviceClass) {
-		T serviceInstance = (T)this.serviceInstances.get(serviceClass);
+		T serviceInstance = this.registerableServicesContainer.get(serviceClass);
 		if(serviceInstance != null) {
 			return serviceInstance;
 		}
@@ -57,7 +56,7 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 			throw new ServiceNotFound("Instance for class '" + serviceClass.toString() + "' could not be created");
 		}
 
-		this.serviceInstances.put(serviceClass, serviceInstance);
+		this.registerableServicesContainer.register(serviceClass, serviceInstance);
 
 		return serviceInstance;
 	}

@@ -1,7 +1,7 @@
 package be.mrtus.container.reflection;
 
 import be.mrtus.container.Container;
-import be.mrtus.container.ContainerAware;
+import be.mrtus.container.RegisterableServicesContainer;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ReflectionContainer implements Container, ContainerAware {
+public class ReflectionContainer implements Container {
 
-	private Container container;
+	private RegisterableServicesContainer registerableServicesContainer;
+
+	public ReflectionContainer(RegisterableServicesContainer registerableServicesContainer) {
+		this.registerableServicesContainer = registerableServicesContainer;
+	}
 
 	@Override
 	public <T> T get(Class<T> serviceClass) {
@@ -22,19 +26,6 @@ public class ReflectionContainer implements Container, ContainerAware {
 		} catch(FittingConstructorNotFound exception) {
 			throw new ServiceNotFound("Instance for class '" + serviceClass.toString() + "' could not be created");
 		}
-	}
-
-	private Container getContainer() {
-		if(this.container == null) {
-			this.container = this;
-		}
-
-		return this.container;
-	}
-
-	@Override
-	public void setContainer(Container container) {
-		this.container = container;
 	}
 
 	private <T> T createInstance(Class<T> serviceClass) {
@@ -46,7 +37,7 @@ public class ReflectionContainer implements Container, ContainerAware {
 	private <T> T createInstanceFromConstructor(Constructor<T> constructor) {
 		List<Object> servicesList = Arrays.asList(constructor.getParameterTypes())
 				.stream()
-				.map(param -> this.getContainer().get(param))
+				.map(param -> this.registerableServicesContainer.get(param))
 				.collect(Collectors.toList());
 
 		try {
@@ -67,7 +58,7 @@ public class ReflectionContainer implements Container, ContainerAware {
 
 					try {
 						constructorParameters.stream()
-								.forEach(param -> this.getContainer().get(param));
+								.forEach(param -> this.registerableServicesContainer.get(param));
 					} catch(ServiceNotFound exception) {
 						return false;
 					}

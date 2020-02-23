@@ -5,7 +5,10 @@ import be.mrtus.container.ContainerAware;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -61,6 +64,8 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 
 		this.serviceInstances.put(serviceClass, serviceInstance);
 
+		this.applyHandlers(serviceInstance);
+
 		return serviceInstance;
 	}
 
@@ -72,6 +77,26 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 	@Override
 	public <T> void share(Class<T> serviceClass, Supplier<T> supplier) {
 		this.configuredServices.put(serviceClass, supplier);
+	}
+
+	private void applyHandlers(Object instance) {
+		var classOfInstance = instance.getClass();
+
+		List<Class> classesList = new ArrayList<>();
+
+		classesList.addAll(Arrays.asList(classOfInstance.getInterfaces()));
+
+		classesList.addAll(this.findSuperClassesOfClass(classOfInstance));
+
+		classesList.forEach(instanceClass -> {
+			var handler = this.configuredHandlers.get(instanceClass);
+
+			if(handler == null) {
+				return;
+			}
+
+			handler.accept(instance);
+		});
 	}
 
 	private ServiceProvider createServiceProviderInstance(Class<? extends ServiceProvider> serviceProviderClass) {
@@ -86,5 +111,20 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 				| InvocationTargetException exception) {
 			throw new CouldNotInstantiateServiceProvider(exception);
 		}
+	}
+
+	private List<Class> findSuperClassesOfClass(Class instanceClass) {
+		var superClass = instanceClass.getSuperclass();
+
+		if(superClass == null) {
+			return Arrays.asList();
+		}
+
+		List<Class> list = new ArrayList<>();
+
+		list.add(superClass);
+		list.addAll(this.findSuperClassesOfClass(superClass));
+
+		return list;
 	}
 }

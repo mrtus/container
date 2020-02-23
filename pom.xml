@@ -98,4 +98,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>github-container</id>
+			<url>https://maven.pkg.github.com/mrtus/container</url>
+		</repository>
+	</distributionManagement>
 </project>

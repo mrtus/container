@@ -7,10 +7,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SimpleContainer implements Container, ConfigurableContainer {
 
+	private final Map<Class, Consumer> configuredHandlers = new HashMap<>();
 	private final Map<Class, Supplier> configuredServices = new HashMap<>();
 	private Container delegate;
 	private final Map<Class, Object> serviceInstances = new HashMap<>();
@@ -60,6 +62,11 @@ public class SimpleContainer implements Container, ConfigurableContainer {
 		this.serviceInstances.put(serviceClass, serviceInstance);
 
 		return serviceInstance;
+	}
+
+	@Override
+	public <T> void handle(Class<T> serviceClass, Consumer<T> consumer) {
+		this.configuredHandlers.put(serviceClass, consumer);
 	}
 
 	@Override

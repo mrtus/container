@@ -3,7 +3,7 @@ package be.mrtus.container;
 import java.util.HashMap;
 import java.util.Map;
 
-final public class Simplecontainer implements RegisterableServicesContainer {
+final public class SimpleContainer implements ContainerRegistry {
 
 	private final Map<Class, Object> serviceInstances = new HashMap<>();
 

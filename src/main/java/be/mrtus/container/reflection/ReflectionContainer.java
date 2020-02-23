@@ -1,7 +1,7 @@
 package be.mrtus.container.reflection;
 
 import be.mrtus.container.Container;
-import be.mrtus.container.RegisterableServicesContainer;
+import be.mrtus.container.ContainerRegistry;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class ReflectionContainer implements Container {
 
-	private RegisterableServicesContainer registerableServicesContainer;
+	private ContainerRegistry registry;
 
-	public ReflectionContainer(RegisterableServicesContainer registerableServicesContainer) {
-		this.registerableServicesContainer = registerableServicesContainer;
+	public ReflectionContainer(ContainerRegistry registry) {
+		this.registry = registry;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class ReflectionContainer implements Container {
 	private <T> T createInstanceFromConstructor(Constructor<T> constructor) {
 		List<Object> servicesList = Arrays.asList(constructor.getParameterTypes())
 				.stream()
-				.map(param -> this.registerableServicesContainer.get(param))
+				.map(param -> this.registry.get(param))
 				.collect(Collectors.toList());
 
 		try {
@@ -58,7 +58,7 @@ public class ReflectionContainer implements Container {
 
 					try {
 						constructorParameters.stream()
-								.forEach(param -> this.registerableServicesContainer.get(param));
+								.forEach(param -> this.registry.get(param));
 					} catch(ServiceNotFound exception) {
 						return false;
 					}

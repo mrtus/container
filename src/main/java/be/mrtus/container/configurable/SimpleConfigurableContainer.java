@@ -1,7 +1,7 @@
 package be.mrtus.container.configurable;
 
 import be.mrtus.container.Container;
-import be.mrtus.container.RegisterableServicesContainer;
+import be.mrtus.container.ContainerRegistry;
 import be.mrtus.container.ServiceNotFound;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,22 +13,22 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	private final Map<Class, Supplier> configuredServices = new HashMap<>();
 	private Container delegate;
-	private RegisterableServicesContainer registerableServicesContainer;
+	private ContainerRegistry registry;
 
 	public SimpleConfigurableContainer(
-			RegisterableServicesContainer canRegisterServices
+			ContainerRegistry registry
 	) {
 		this(
-				canRegisterServices,
+				registry,
 				new NullContainer()
 		);
 	}
 
 	public SimpleConfigurableContainer(
-			RegisterableServicesContainer registerableServicesContainer,
+			ContainerRegistry registry,
 			Container delegate
 	) {
-		this.registerableServicesContainer = registerableServicesContainer;
+		this.registry = registry;
 		this.delegate = delegate;
 	}
 
@@ -41,7 +41,7 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 	@Override
 	public <T> T get(Class<T> serviceClass) {
-		T serviceInstance = this.registerableServicesContainer.get(serviceClass);
+		T serviceInstance = this.registry.get(serviceClass);
 		if(serviceInstance != null) {
 			return serviceInstance;
 		}
@@ -56,7 +56,7 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 			throw new ServiceNotFound("Instance for class '" + serviceClass.toString() + "' could not be created");
 		}
 
-		this.registerableServicesContainer.register(serviceClass, serviceInstance);
+		this.registry.register(serviceClass, serviceInstance);
 
 		return serviceInstance;
 	}

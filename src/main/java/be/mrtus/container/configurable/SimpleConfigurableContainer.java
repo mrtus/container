@@ -23,17 +23,17 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 	private ContainerRegistry registry;
 
 	public SimpleConfigurableContainer(
-			ContainerRegistry registry
+		ContainerRegistry registry
 	) {
 		this(
-				registry,
-				new NullContainer()
+			registry,
+			new NullContainer()
 		);
 	}
 
 	public SimpleConfigurableContainer(
-			ContainerRegistry registry,
-			Container delegate
+		ContainerRegistry registry,
+		Container delegate
 	) {
 		this.registry = registry;
 		this.delegate = delegate;
@@ -58,8 +58,8 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 		}
 
 		Supplier<T> supplier = this.configuredServices.getOrDefault(
-				serviceClass,
-				() -> this.delegate.get(serviceClass)
+			serviceClass,
+			() -> this.delegate.get(serviceClass)
 		);
 
 		serviceInstance = supplier.get();
@@ -115,10 +115,10 @@ public class SimpleConfigurableContainer implements Container, ConfigurableConta
 
 			return serviceProviderConstructor.newInstance();
 		} catch(NoSuchMethodException
-				| InstantiationException
-				| IllegalAccessException
-				| IllegalArgumentException
-				| InvocationTargetException exception) {
+			| InstantiationException
+			| IllegalAccessException
+			| IllegalArgumentException
+			| InvocationTargetException exception) {
 			throw new CouldNotInstantiateServiceProvider(exception);
 		}
 	}

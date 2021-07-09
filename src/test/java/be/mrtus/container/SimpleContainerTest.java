@@ -27,30 +27,30 @@ public class SimpleContainerTest {
 	@Test
 	public void itShouldThrowWhenFetchingNullClass() {
 		Assertions.assertThrows(
-				NullPointerException.class,
-				() -> {
-					this.container.get(null);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.get(null);
+			}
 		);
 	}
 
 	@Test
 	public void itShouldThrowWhenRegisteringWithNullClass() {
 		Assertions.assertThrows(
-				NullPointerException.class,
-				() -> {
-					this.container.register(null, new Object());
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.register(null, new Object());
+			}
 		);
 	}
 
 	@Test
 	public void itShouldThrowWhenRegisteringWithNullInstance() {
 		Assertions.assertThrows(
-				NullPointerException.class,
-				() -> {
-					this.container.register(Object.class, null);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.register(Object.class, null);
+			}
 		);
 	}
 }

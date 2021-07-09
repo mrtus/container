@@ -20,8 +20,8 @@ public class SimpleConfigurableContainerTest {
 		this.delegate = Mockito.mock(Container.class);
 
 		this.container = new SimpleConfigurableContainer(
-				this.registry,
-				this.delegate
+			this.registry,
+			this.delegate
 		);
 	}
 
@@ -32,7 +32,7 @@ public class SimpleConfigurableContainerTest {
 		this.container.addServiceProvider(serviceProvider);
 
 		Mockito.verify(serviceProvider)
-				.configure(this.container);
+			.configure(this.container);
 	}
 
 	@Test
@@ -40,17 +40,17 @@ public class SimpleConfigurableContainerTest {
 		var object = new Object();
 
 		Mockito.when(this.registry.get(Object.class))
-				.thenReturn(null);
+			.thenReturn(null);
 
-		this.container.share(Object.class, () -> {
-						 return object;
-					 }
+		this.container.share(
+			Object.class,
+			() -> object
 		);
 
 		var actual = this.container.get(Object.class);
 
 		Mockito.verify(this.registry)
-				.register(Object.class, object);
+			.register(Object.class, object);
 
 		Assertions.assertEquals(object, actual);
 	}
@@ -60,15 +60,15 @@ public class SimpleConfigurableContainerTest {
 		var object = new Object();
 
 		Mockito.when(this.registry.get(Object.class))
-				.thenReturn(null);
+			.thenReturn(null);
 
 		Mockito.when(this.delegate.get(Object.class))
-				.thenReturn(object);
+			.thenReturn(object);
 
 		var actual = this.container.get(Object.class);
 
 		Mockito.verify(this.registry)
-				.register(Object.class, object);
+			.register(Object.class, object);
 
 		Assertions.assertEquals(object, actual);
 	}
@@ -78,12 +78,12 @@ public class SimpleConfigurableContainerTest {
 		var object = new Object();
 
 		Mockito.when(this.registry.get(Object.class))
-				.thenReturn(object);
+			.thenReturn(object);
 
 		var actual = this.container.get(Object.class);
 
 		Mockito.verify(this.registry, Mockito.never())
-				.register(Mockito.any(), Mockito.any());
+			.register(Mockito.any(), Mockito.any());
 
 		Assertions.assertEquals(object, actual);
 	}
@@ -95,29 +95,32 @@ public class SimpleConfigurableContainerTest {
 	@Test
 	public void itShouldThrowWhenHandleClassIsNull() {
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.handle(null, instance -> {
-								  }
-					);
+			NullPointerException.class,
+			() -> {
+				this.container.handle(null, instance -> {
 				}
+				);
+			}
 		);
 	}
 
 	@Test
 	public void itShouldThrowWhenHandleConsumerIsNull() {
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.handle(Object.class, null);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.handle(Object.class, null);
+			}
 		);
 	}
 
 	@Test
 	public void itShouldThrowWhenRequestedServiceClassIsNullWhenFetching() {
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.get(null);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.get(null);
+			}
 		);
 	}
 
@@ -126,9 +129,10 @@ public class SimpleConfigurableContainerTest {
 		Class<ServiceProvider> serviceProviderClass = null;
 
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.addServiceProvider(serviceProviderClass);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.addServiceProvider(serviceProviderClass);
+			}
 		);
 	}
 
@@ -137,18 +141,20 @@ public class SimpleConfigurableContainerTest {
 		ServiceProvider serviceProvider = null;
 
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.addServiceProvider(serviceProvider);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.addServiceProvider(serviceProvider);
+			}
 		);
 	}
 
 	@Test
 	public void itShouldThrowWhenShareAsAClassClassIsNull() {
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.share(null, Object.class);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.share(null, Object.class);
+			}
 		);
 	}
 
@@ -157,9 +163,10 @@ public class SimpleConfigurableContainerTest {
 		Supplier supplier = null;
 
 		Assertions.assertThrows(
-				NullPointerException.class, () -> {
-					this.container.share(null, supplier);
-				}
+			NullPointerException.class,
+			() -> {
+				this.container.share(null, supplier);
+			}
 		);
 	}
 
@@ -167,16 +174,18 @@ public class SimpleConfigurableContainerTest {
 	public void itShouldUseConfiguredHandlersService() {
 		var object = new Object();
 
-		container.handle(Object.class, instance -> {
-					 Assertions.assertEquals(new Object(), instance);
-				 }
+		container.handle(
+			Object.class,
+			instance -> {
+				Assertions.assertEquals(new Object(), instance);
+			}
 		);
 
 		Mockito.when(this.registry.get(Object.class))
-				.thenReturn(null);
+			.thenReturn(null);
 
 		Mockito.when(this.delegate.get(Object.class))
-				.thenReturn(object);
+			.thenReturn(object);
 
 		this.container.get(Object.class);
 	}
